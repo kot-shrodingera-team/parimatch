@@ -18,7 +18,7 @@ const openBet = async (): Promise<void> => {
   log(outcomeId, 'white', true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const payload = {} as any;
-  if (worker.IsRu) {
+  if (window.location.origin === 'https://www.parimatch.ru') {
     payload.outcomeId = outcomeId;
   } else {
     // 2|6084802|5|/1/1$1@120|2.5|5,[2.5],[1],1,4,[]
