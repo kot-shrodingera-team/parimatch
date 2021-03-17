@@ -18,38 +18,38 @@ const openBet = async (): Promise<void> => {
   log(outcomeId, 'white', true);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const payload = {} as any;
-  if (window.location.origin === 'https://www.parimatch.ru') {
-    payload.outcomeId = outcomeId;
-  } else {
-    // 2|6084802|5|/1/1$1@120|2.5|5,[2.5],[1],1,4,[]
-    // ?|eventId|marketType|layout?/period/resultKind$?@?|parameter|marketType,[values],[period],?,outcomeType,[outcomeValues]
-    const outcomeRegex = /^2\|(?<eventId>\d+)\|(?<marketType>\d+)\|(?<layout>\d+)?\/(?<period>\d+)\/(?<resultKind>\d+)\$\d+@\d+\|(?:\d+(?:\.\d+)?)?\|\d+,\[(?<values>[^\]]*)],\[[^\]]*],\d+,(?<outcomeType>\d+),\[(?<outcomeValues>[^\]]*)]$/;
-    const match = outcomeId.match(outcomeRegex);
-    if (!match) {
-      throw new JsFailError('Ошибка парсинга данных. Обратитесь в ТП');
-    }
-    const { groups } = match;
-    payload.outcomeId = {};
-    payload.outcomeId.eventId = groups.eventId;
-    payload.outcomeId.resultKind = Number(groups.resultKind);
-    payload.outcomeId.marketType = Number(groups.marketType);
-    payload.outcomeId.period = Number(groups.period);
-    if (groups.values) {
-      payload.outcomeId.values = groups.values.split(',');
-    } else {
-      payload.outcomeId.values = [];
-    }
-    payload.outcomeId.outcomeType = Number(groups.outcomeType);
-    if (groups.outcomeValues) {
-      payload.outcomeId.outcomeValues = groups.outcomeValues.split(',');
-    } else {
-      payload.outcomeId.outcomeValues = [];
-    }
-    payload.data = {};
-    if (groups.layout) {
-      payload.data.layout = groups.layout;
-    }
+  // if (window.location.origin === 'https://www.parimatch.ru') {
+  //   payload.outcomeId = outcomeId;
+  // } else {
+  // 2|6084802|5|/1/1$1@120|2.5|5,[2.5],[1],1,4,[]
+  // ?|eventId|marketType|layout?/period/resultKind$?@?|parameter|marketType,[values],[period],?,outcomeType,[outcomeValues]
+  const outcomeRegex = /^2\|(?<eventId>\d+)\|(?<marketType>\d+)\|(?<layout>\d+)?\/(?<period>\d+)\/(?<resultKind>\d+)\$\d+@\d+\|(?:\d+(?:\.\d+)?)?\|\d+,\[(?<values>[^\]]*)],\[[^\]]*],\d+,(?<outcomeType>\d+),\[(?<outcomeValues>[^\]]*)]$/;
+  const match = outcomeId.match(outcomeRegex);
+  if (!match) {
+    throw new JsFailError('Ошибка парсинга данных. Обратитесь в ТП');
   }
+  const { groups } = match;
+  payload.outcomeId = {};
+  payload.outcomeId.eventId = groups.eventId;
+  payload.outcomeId.resultKind = Number(groups.resultKind);
+  payload.outcomeId.marketType = Number(groups.marketType);
+  payload.outcomeId.period = Number(groups.period);
+  if (groups.values) {
+    payload.outcomeId.values = groups.values.split(',');
+  } else {
+    payload.outcomeId.values = [];
+  }
+  payload.outcomeId.outcomeType = Number(groups.outcomeType);
+  if (groups.outcomeValues) {
+    payload.outcomeId.outcomeValues = groups.outcomeValues.split(',');
+  } else {
+    payload.outcomeId.outcomeValues = [];
+  }
+  payload.data = {};
+  if (groups.layout) {
+    payload.data.layout = groups.layout;
+  }
+  // }
 
   const data = {
     payload,
