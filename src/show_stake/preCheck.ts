@@ -14,7 +14,7 @@ const preCheck = async (): Promise<void> => {
       '[data-id="event-markets-tab-all"]'
     )) as HTMLElement;
     if (!allButton) {
-      throw new JsFailError('Не найдена кнопка');
+      throw new JsFailError('Не найдена кнопка выбора всех маркетов');
     }
     allButton.click();
     log('Нажали кнопку "Все"', 'orange');
@@ -22,7 +22,7 @@ const preCheck = async (): Promise<void> => {
       '.G4nyymLzfq_YQwSD9rcf0[data-id="event-markets-tab-all"]'
     );
     if (!allButtonActive) {
-      throw new JsFailError('Не найдена кнопка');
+      throw new JsFailError('Не переключилась кнопка выбора всех маркетов');
     }
     log('Переключилось', 'steelblue');
     // console.log(document.querySelectorAll('._6JPDLIQ-y9WxCN-M_AP3W'));
