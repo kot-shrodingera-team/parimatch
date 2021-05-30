@@ -26,7 +26,7 @@ const preCheck = async (): Promise<void> => {
     }
     log('Переключилось', 'steelblue');
     // console.log(document.querySelectorAll('._6JPDLIQ-y9WxCN-M_AP3W'));
-    await getElement('._6JPDLIQ-y9WxCN-M_AP3W');
+    // await getElement('._6JPDLIQ-y9WxCN-M_AP3W'); // Что-то ожидалось. Таблица ставок?
 
     // const observerConfig = { childList: true, subtree: true, attributes: true };
 
