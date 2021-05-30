@@ -43,8 +43,9 @@ const showStake = async (): Promise<void> => {
 
     await openBet();
 
+    // Селектор ставки, без класса недоступности ставки
     const enabledBet = await getElement(
-      '._2SwyDjU68uVgtwEM-ew4KQ:not(._1iu5KNeIQh2FkdjD9xJVnk)'
+      '._202_mUQgiqpBEpsnfX4nOy:not(.VvPzvS2sTu5dVBQJfXbbZ)'
     );
     if (!enabledBet) {
       throw new JsFailError('Ставка не стала доступной');
