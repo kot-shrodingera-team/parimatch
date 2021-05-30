@@ -19,7 +19,7 @@ const preCheck = async (): Promise<void> => {
     allButton.click();
     log('Нажали кнопку "Все"', 'orange');
     const allButtonActive = await getElement(
-      '.G4nyymLzfq_YQwSD9rcf0[data-id="event-markets-tab-all"]'
+      '.dPRmDXN5chphSRoNdjHlN[data-id="event-markets-tab-all"]'
     );
     if (!allButtonActive) {
       throw new JsFailError('Не переключилась кнопка выбора всех маркетов');
