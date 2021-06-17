@@ -1,6 +1,5 @@
 import doStakeGenerator from '@kot-shrodingera-team/germes-generators/worker_callbacks/doStake';
 import getCoefficient from '../stake_info/getCoefficient';
-import { clearDoStakeTime } from '../stake_info/doStakeTime';
 
 // const preCheck = (): boolean => {
 //   return true;
@@ -13,16 +12,16 @@ import { clearDoStakeTime } from '../stake_info/doStakeTime';
 const doStake = doStakeGenerator({
   // preCheck,
   doStakeButtonSelector: '[data-id="betslip2-place-bet-button"]',
-  getCoefficient,
-  disabledCheck: true,
   // errorClasses: [
   //   {
   //     className: '',
   //     message: '',
   //   },
   // ],
+  disabledCheck: true,
+  getCoefficient,
   // postCheck,
-  clearDoStakeTime,
+  // context: () => document,
 });
 
 export default doStake;
