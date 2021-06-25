@@ -6,6 +6,7 @@ import {
 } from '@kot-shrodingera-team/germes-utils';
 import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
 import { getReactInstance } from '@kot-shrodingera-team/germes-utils/reactUtils';
+import { coefficientReady } from '../stake_info/getCoefficient';
 import getStakeCount from '../stake_info/getStakeCount';
 import clearCoupon from './clearCoupon';
 
@@ -23,48 +24,76 @@ const openBet = async (): Promise<void> => {
   /*                      Формирование данных для поиска                      */
   /* ======================================================================== */
 
-  const { outcomeId }: { outcomeId: string } = JSON.parse(worker.BetId);
-  log(`outcomeId = ${outcomeId}`, 'white', true);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const payload = {} as any;
-  // if (window.location.origin === 'https://www.parimatch.ru') {
-  //   payload.outcomeId = outcomeId;
-  // } else {
-  // 2|6084802|5|/1/1$1@120|2.5|5,[2.5],[1],1,4,[]
-  // ?|eventId|marketType|layout?/period/resultKind$?@?|parameter|marketType,[values],[period],?,outcomeType,[outcomeValues]
-  const outcomeRegex =
-    /^2\|(?<eventId>\d+)\|(?<marketType>\d+)\|(?<layout>\d+)?\/(?<period>\d+)\/(?<resultKind>\d+)\$\d+@\d+\|(?:\d+(?:\.\d+)?)?\|\d+,\[(?<values>[^\]]*)],\[[^\]]*],\d+,(?<outcomeType>\d+),\[(?<outcomeValues>[^\]]*)]$/;
-  const match = outcomeId.match(outcomeRegex);
-  if (!match) {
-    throw new JsFailError('Ошибка парсинга данных. Обратитесь в ТП');
-  }
-  const { groups } = match;
-  payload.outcomeId = {};
-  payload.outcomeId.eventId = groups.eventId;
-  payload.outcomeId.resultKind = Number(groups.resultKind);
-  payload.outcomeId.marketType = Number(groups.marketType);
-  payload.outcomeId.period = Number(groups.period);
-  if (groups.values) {
-    payload.outcomeId.values = groups.values.split(',');
-  } else {
-    payload.outcomeId.values = [];
-  }
-  payload.outcomeId.outcomeType = Number(groups.outcomeType);
-  if (groups.outcomeValues) {
-    payload.outcomeId.outcomeValues = groups.outcomeValues.split(',');
-  } else {
-    payload.outcomeId.outcomeValues = [];
-  }
-  payload.data = {};
-  if (groups.layout) {
-    payload.data.layout = groups.layout;
-  }
+  const {
+    resultKind,
+    marketType,
+    period,
+    outcomeValues,
+    outcomeType,
+    marketParameters: values,
+  } = JSON.parse(worker.BetId);
+
+  // const { outcomeId }: { outcomeId: string } = JSON.parse(worker.BetId);
+  // log(`outcomeId = ${outcomeId}`, 'white', true);
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // const payload = {} as any;
+  // // if (window.location.origin === 'https://www.parimatch.ru') {
+  // //   payload.outcomeId = outcomeId;
+  // // } else {
+  // // 2|6084802|5|/1/1$1@120|2.5|5,[2.5],[1],1,4,[]
+  // // ?|eventId|marketType|layout?/period/resultKind$?@?|parameter|marketType,[values],[period],?,outcomeType,[outcomeValues]
+  // const outcomeRegex =
+  //   /^2\|(?<eventId>\d+)\|(?<marketType>\d+)\|(?<layout>\d+)?\/(?<period>\d+)\/(?<resultKind>\d+)\$\d+@\d+\|(?:\d+(?:\.\d+)?)?\|\d+,\[(?<values>[^\]]*)],\[[^\]]*],\d+,(?<outcomeType>\d+),\[(?<outcomeValues>[^\]]*)]$/;
+  // const match = outcomeId.match(outcomeRegex);
+  // if (!match) {
+  //   throw new JsFailError('Ошибка парсинга данных. Обратитесь в ТП');
   // }
+  // const { groups } = match;
+  // payload.outcomeId = {};
+  // payload.outcomeId.eventId = groups.eventId;
+  // payload.outcomeId.resultKind = Number(groups.resultKind);
+  // payload.outcomeId.marketType = Number(groups.marketType);
+  // payload.outcomeId.period = Number(groups.period);
+  // if (groups.values) {
+  //   payload.outcomeId.values = groups.values.split(',');
+  // } else {
+  //   payload.outcomeId.values = [];
+  // }
+  // payload.outcomeId.outcomeType = Number(groups.outcomeType);
+  // if (groups.outcomeValues) {
+  //   payload.outcomeId.outcomeValues = groups.outcomeValues.split(',');
+  // } else {
+  //   payload.outcomeId.outcomeValues = [];
+  // }
+  // payload.data = {};
+  // if (groups.layout) {
+  //   payload.data.layout = groups.layout;
+  // }
+  // // }
+  const emptyArray = (array: unknown[]) => {
+    return Array.isArray(array) && array.length === 1 && array[0] === '';
+  };
   const data = {
-    payload,
+    payload: {
+      data: {
+        layout: undefined as unknown,
+      },
+      outcomeId: {
+        eventId: worker.EventId,
+        resultKind,
+        marketType,
+        period,
+        values: emptyArray(values) ? ([] as unknown[]) : values,
+        outcomeType,
+        outcomeValues: emptyArray(outcomeValues)
+          ? ([] as unknown[])
+          : outcomeValues,
+      },
+    },
     type: '/outcomes/toggle_outcome',
   };
-  log(JSON.stringify(data, null, 2), 'white', true);
+  // log(JSON.stringify(data, null, 2), 'white', true);
+  console.log(data);
 
   /* ======================================================================== */
   /*                           Получение диспатчера                           */
@@ -103,11 +132,18 @@ const openBet = async (): Promise<void> => {
 
   // Селектор ставки, без класса недоступности ставки
   const enabledBetSelector =
-    '._202_mUQgiqpBEpsnfX4nOy:not(_3dh0pK0lts4xHLOPcbzkFL, .VvPzvS2sTu5dVBQJfXbbZ)';
+    '._202_mUQgiqpBEpsnfX4nOy:not(._3dh0pK0lts4xHLOPcbzkFL):not(.VvPzvS2sTu5dVBQJfXbbZ)';
   const enabledBet = await getElement(enabledBetSelector);
   if (!enabledBet) {
     throw new JsFailError('Ставка не стала доступной');
   }
+  log('Ставка доступна', 'cadetblue', true);
+
+  const isCoefficientReady = await coefficientReady();
+  if (!isCoefficientReady) {
+    throw new JsFailError('Коэффициент не появился');
+  }
+  log('Коэффициент появился', 'cadetblue', true);
 
   /* ======================================================================== */
   /*                    Вывод информации об открытой ставке                   */
