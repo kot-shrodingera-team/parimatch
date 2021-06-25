@@ -93,7 +93,6 @@ const openBet = async (): Promise<void> => {
     type: '/outcomes/toggle_outcome',
   };
   // log(JSON.stringify(data, null, 2), 'white', true);
-  console.log(data);
 
   /* ======================================================================== */
   /*                           Получение диспатчера                           */
