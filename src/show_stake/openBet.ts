@@ -70,9 +70,9 @@ const openBet = async (): Promise<void> => {
   //   payload.data.layout = groups.layout;
   // }
   // // }
-  const emptyArray = (array: unknown[]) => {
-    return Array.isArray(array) && array.length === 1 && array[0] === '';
-  };
+  // const emptyArray = (array: unknown[]) => {
+  //   return Array.isArray(array) && array.length === 1 && array[0] === '';
+  // };
   const data = {
     payload: {
       data: {
@@ -83,11 +83,13 @@ const openBet = async (): Promise<void> => {
         resultKind,
         marketType,
         period,
-        values: emptyArray(values) ? ([] as unknown[]) : values,
+        // values: emptyArray(values) ? ([] as unknown[]) : values,
+        values,
         outcomeType,
-        outcomeValues: emptyArray(outcomeValues)
-          ? ([] as unknown[])
-          : outcomeValues,
+        // outcomeValues: emptyArray(outcomeValues)
+        //   ? ([] as unknown[])
+        //   : outcomeValues,
+        outcomeValues,
       },
     },
     type: '/outcomes/toggle_outcome',
