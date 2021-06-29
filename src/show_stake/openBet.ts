@@ -28,7 +28,7 @@ const openBet = async (): Promise<void> => {
     resultKind,
     marketType,
     period,
-    outcomeValues,
+    outcomeParameters: outcomeValues,
     outcomeType,
     marketParameters: values,
   } = JSON.parse(worker.BetId);
