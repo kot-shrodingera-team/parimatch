@@ -15,7 +15,7 @@ const preOpenBet = async (): Promise<void> => {
   allButton.click();
   log('Нажали кнопку "Все"', 'orange');
   const allButtonActive = await getElement(
-    '.dPRmDXN5chphSRoNdjHlN[data-id="event-markets-tab-all"]'
+    '.dPRmDXN5chphSRoNdjHlN[data-id="event-markets-tab-all"], ._1KVg07mpnY7ldox993_W6Q[data-id="event-markets-tab-all"]'
   );
   if (!allButtonActive) {
     throw new JsFailError('Не переключилась кнопка выбора всех маркетов');
