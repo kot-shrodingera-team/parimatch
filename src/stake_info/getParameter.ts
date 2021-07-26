@@ -41,7 +41,10 @@ const getParameter = (): number => {
   const parameterRegex = /(?:([+-]?\d+(?:\.\d+)?)|\(([+-]?\d+(?:\.\d+)?)\))$/;
   const parameterMatch = betName.match(parameterRegex);
   if (parameterMatch) {
-    return Number(parameterMatch[1]);
+    if (parameterMatch[1] !== undefined) {
+      return Number(parameterMatch[1]);
+    }
+    return Number(parameterMatch[2]);
   }
   return -6666;
 };
