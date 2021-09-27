@@ -21,18 +21,6 @@ const preOpenBet = async (): Promise<void> => {
     throw new JsFailError('Не переключилась кнопка выбора всех маркетов');
   }
   log('Переключилось', 'steelblue');
-  // console.log(document.querySelectorAll('._6JPDLIQ-y9WxCN-M_AP3W'));
-  // await getElement('._6JPDLIQ-y9WxCN-M_AP3W'); // Что-то ожидалось. Таблица ставок?
-
-  // const observerConfig = { childList: true, subtree: true, attributes: true };
-
-  // const mutationObserver = new MutationObserver((mutations) => {
-  //   console.warn(mutations);
-  // });
-
-  // mutationObserver.observe(document, observerConfig);
-  // log('подключили observer', 'steelblue');
-  // window.observer = mutationObserver;
 };
 
 export default preOpenBet;

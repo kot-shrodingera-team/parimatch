@@ -7,6 +7,7 @@ import {
   checkCouponLoadingError,
   checkCouponLoadingSuccess,
   // text,
+  // sendTGBotMessage,
 } from '@kot-shrodingera-team/germes-utils';
 import { StateMachine } from '@kot-shrodingera-team/germes-utils/stateMachine';
 
@@ -55,27 +56,32 @@ const asyncCheck = async () => {
     //   entry: async () => {
     //     log('Появилась ошибка', 'steelblue');
     //     window.germesData.betProcessingAdditionalInfo = null;
-    //     const errorText = text(machine.data.result);
+    //     const errorText = text(machine.data.result as HTMLElement);
     //     log(errorText, 'tomato');
     //     worker.Helper.SendInformedMessage(errorText);
+    //     sendTGBotMessage(
+    //       '1786981726:AAE35XkwJRsuReonfh1X2b8E7k9X4vknC_s',
+    //       126302051,
+    //       errorText
+    //     );
     //     checkCouponLoadingError({});
+    //     machine.end = true;
     //   },
-    //   final: true,
     // },
     locked: {
       entry: async () => {
         log('Ставка недоступна', 'steelblue');
         window.germesData.betProcessingAdditionalInfo = null;
         checkCouponLoadingError({});
+        machine.end = true;
       },
-      final: true,
     },
     betPlaced: {
       entry: async () => {
         window.germesData.betProcessingAdditionalInfo = null;
         checkCouponLoadingSuccess('Ставка принята');
+        machine.end = true;
       },
-      final: true,
     },
     timeout: {
       entry: async () => {
@@ -84,8 +90,8 @@ const asyncCheck = async () => {
           botMessage: 'Не дождались результата ставки',
           informMessage: 'Не дождались результата ставки',
         });
+        machine.end = true;
       },
-      final: true,
     },
   });
 

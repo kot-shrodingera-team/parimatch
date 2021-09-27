@@ -21,7 +21,7 @@ worker.SetCallBacks(
   setStakeSum,
   doStake,
   checkCouponLoading,
-  checkStakeStatus,
+  checkStakeStatus
   // afterSuccesfulStake
 );
 

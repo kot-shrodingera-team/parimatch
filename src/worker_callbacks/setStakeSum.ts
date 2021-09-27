@@ -1,7 +1,7 @@
 import setStakeSumGenerator, {
   clearStakeSumGenerator,
 } from '@kot-shrodingera-team/germes-generators/worker_callbacks/setStakeSum';
-import { sumInputSelector } from '../stake_info/getCurrentSum';
+import getCurrentSum, { sumInputSelector } from '../stake_info/getCurrentSum';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // const preInputCheck = (sum: number): boolean => {
@@ -11,6 +11,7 @@ import { sumInputSelector } from '../stake_info/getCurrentSum';
 const setStakeSumOptions = {
   sumInputSelector,
   alreadySetCheck: {
+    getCurrentSum,
     falseOnSumChange: false,
   },
   // preInputCheck,

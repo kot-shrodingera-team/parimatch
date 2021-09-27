@@ -12,22 +12,22 @@ const balanceOptions: StakeInfoValueOptions = {
     text: {
       // getText: () => '',
       selector: balanceSelector,
-      context: () => document,
+      // context: () => document,
     },
-    replaceDataArray: [
-      {
-        searchValue: '',
-        replaceValue: '',
-      },
-    ],
-    removeRegex: /[\s,']/g,
-    matchRegex: /(\d+(?:\.\d+)?)/,
+    // replaceDataArray: [
+    //   {
+    //     searchValue: '',
+    //     replaceValue: '',
+    //   },
+    // ],
+    // removeRegex: /[\s,']/g,
+    // matchRegex: /(\d+(?:\.\d+)?)/,
     errorValue: 0,
   },
-  zeroValues: [],
+  // zeroValues: [],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  modifyValue: (value: number, extractType: string) => value,
-  disableLog: false,
+  // modifyValue: (value: number, extractType: string) => value,
+  // disableLog: false,
 };
 
 const getBalance = getStakeInfoValueGenerator(balanceOptions);
@@ -35,6 +35,7 @@ const getBalance = getStakeInfoValueGenerator(balanceOptions);
 export const balanceReady = stakeInfoValueReadyGenerator(balanceOptions);
 
 export const updateBalance = (): void => {
+  worker.StakeInfo.Balance = getBalance();
   worker.JSBalanceChange(getBalance());
 };
 

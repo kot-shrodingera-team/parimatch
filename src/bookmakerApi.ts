@@ -1,5 +1,6 @@
 declare global {
   // interface GermesData {}
+  // interface Window {}
 }
 
 export const clearGermesData = (): void => {
@@ -16,6 +17,12 @@ export const clearGermesData = (): void => {
       window.germesData.betProcessingStep = 'error';
       window.germesData.stakeDisabled = true;
     },
+    updateManualDataIntervalId: undefined,
+    stopUpdateManualData: undefined,
+    manualMaximumStake: undefined,
+    manualCoefficient: undefined,
+    manualParameter: undefined,
+    manualStakeEnabled: undefined,
   };
 };
 
