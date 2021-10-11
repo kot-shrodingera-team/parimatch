@@ -39,7 +39,7 @@ const authorize = authorizeGenerator({
     // afterOpenDelay: 0,
   },
   // preInputCheck,
-  loginInputSelector: '[name="phone"], [name="email"]',
+  loginInputSelector: '[name="id"], [name="phone"], [name="email"]',
   passwordInputSelector: '[name="password"]',
   submitButtonSelector: '[data-id="login-button"]',
   inputType: 'react',
