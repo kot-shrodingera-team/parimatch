@@ -34,7 +34,34 @@ const preOpenBet = async (): Promise<void> => {
   } else if (document.querySelector('[data-id="betslip2-outcome-block"]')) {
     log('Дождались появления ставки в купоне', 'cadetblue', true);
   } else {
-    throw new JsFailError('Не дождались появления купона');
+    log(
+      'Не дождались появления купона. Переоткрываем вкладку купона',
+      'crimson'
+    );
+    const historyTab = document.querySelector<HTMLElement>(
+      '[data-id="betsHistory"]'
+    );
+    const betslipTab = document.querySelector<HTMLElement>(
+      '[data-id="betslip"]'
+    );
+    if (!historyTab) {
+      throw new JsFailError('Не найдена вклада "Мои Пари"');
+    }
+    if (!betslipTab) {
+      throw new JsFailError('Не найдена вклада "Купон"');
+    }
+    historyTab.click();
+    betslipTab.click();
+    await getElement(
+      '[data-id="empty-betslip-wrapper"], [data-id="betslip2-outcome-block"]'
+    );
+    if (document.querySelector('[data-id="empty-betslip-wrapper"]')) {
+      log('Дождались появления пустого купона', 'cadetblue', true);
+    } else if (document.querySelector('[data-id="betslip2-outcome-block"]')) {
+      log('Дождались появления ставки в купоне', 'cadetblue', true);
+    } else {
+      throw new JsFailError('Так и не дождались появления купона');
+    }
   }
   console.log(document.querySelector('._2IhWyc1X2jIjSb6LZqIvU9').outerHTML);
 };
