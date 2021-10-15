@@ -6,7 +6,7 @@ import authorize from './authorize';
 
 const initialize = initializeGenerator({
   authStateReady,
-  // authStateReadyTimeout: 5000,
+  authStateReadyTimeout: 15000,
   checkAuth,
   balanceReady,
   updateBalance,

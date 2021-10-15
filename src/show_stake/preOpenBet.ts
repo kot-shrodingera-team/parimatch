@@ -21,6 +21,22 @@ const preOpenBet = async (): Promise<void> => {
     throw new JsFailError('Не переключилась кнопка выбора всех маркетов');
   }
   log('Переключилось', 'steelblue');
+
+  /* ========================================================================== */
+  /*                           Ожидаем загрузки купона                          */
+  /* ========================================================================== */
+
+  await getElement(
+    '[data-id="empty-betslip-wrapper"], [data-id="betslip2-outcome-block"]'
+  );
+  if (document.querySelector('[data-id="empty-betslip-wrapper"]')) {
+    log('Дождались появления пустого купона', 'cadetblue', true);
+  } else if (document.querySelector('[data-id="betslip2-outcome-block"]')) {
+    log('Дождались появления ставки в купоне', 'cadetblue', true);
+  } else {
+    throw new JsFailError('Не дождались появления купона');
+  }
+  console.log(document.querySelector('._2IhWyc1X2jIjSb6LZqIvU9').outerHTML);
 };
 
 export default preOpenBet;

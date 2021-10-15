@@ -1,11 +1,14 @@
 import {
+  awaiter,
   getElement,
   log,
   repeatingOpenBet,
   text,
 } from '@kot-shrodingera-team/germes-utils';
 import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
-import { getReactInstance } from '@kot-shrodingera-team/germes-utils/reactUtils';
+import expandMarket from '../helpers/expandMarket';
+import findMarket from '../helpers/findMarket';
+import findOutcome from '../helpers/findOutcome';
 import { coefficientReady } from '../stake_info/getCoefficient';
 import getStakeCount from '../stake_info/getStakeCount';
 import clearCoupon from './clearCoupon';
@@ -19,6 +22,7 @@ const openBet = async (): Promise<void> => {
   if (!couponCleared) {
     throw new JsFailError('Не удалось очистить купон');
   }
+  console.log(document.querySelector('._2IhWyc1X2jIjSb6LZqIvU9').outerHTML);
 
   /* ======================================================================== */
   /*                      Формирование данных для поиска                      */
@@ -28,10 +32,31 @@ const openBet = async (): Promise<void> => {
     resultKind,
     marketType,
     period,
-    outcomeParameters: outcomeValues,
+    outcomeParameters,
     outcomeType,
-    marketParameters: values,
+    marketParameters,
+    market_name: betIdMarketName,
+    outcome_name: betIdOutcomeName,
   } = JSON.parse(worker.BetId);
+
+  log(`Ищем маркет ${betIdMarketName}`, 'steelblue');
+  const market = findMarket(worker.EventId, marketType, period, resultKind);
+  if (!market) {
+    throw new JsFailError('Маркет не найден');
+  }
+
+  expandMarket(market);
+
+  log(`Ищем исход ${betIdOutcomeName}`, 'steelblue');
+  const outcome = findOutcome(
+    market,
+    outcomeType,
+    outcomeParameters,
+    marketParameters
+  );
+  if (!outcome) {
+    throw new JsFailError('Исход не найден');
+  }
 
   // const { outcomeId }: { outcomeId: string } = JSON.parse(worker.BetId);
   // log(`outcomeId = ${outcomeId}`, 'white', true);
@@ -73,57 +98,59 @@ const openBet = async (): Promise<void> => {
   // const emptyArray = (array: unknown[]) => {
   //   return Array.isArray(array) && array.length === 1 && array[0] === '';
   // };
-  const data = {
-    payload: {
-      data: {
-        layout: undefined as unknown,
-      },
-      outcomeId: {
-        eventId: worker.EventId,
-        resultKind,
-        marketType,
-        period,
-        // values: emptyArray(values) ? ([] as unknown[]) : values,
-        values,
-        outcomeType,
-        // outcomeValues: emptyArray(outcomeValues)
-        //   ? ([] as unknown[])
-        //   : outcomeValues,
-        outcomeValues,
-      },
-    },
-    type: '/outcomes/toggle_outcome',
-  };
+  // const data = {
+  //   payload: {
+  //     data: {
+  //       layout: undefined as unknown,
+  //     },
+  //     metadata: undefined as unknown,
+  //     outcomeId: {
+  //       eventId: worker.EventId,
+  //       resultKind,
+  //       marketType,
+  //       period,
+  //       // values: emptyArray(values) ? ([] as unknown[]) : values,
+  //       values,
+  //       outcomeType,
+  //       // outcomeValues: emptyArray(outcomeValues)
+  //       //   ? ([] as unknown[])
+  //       //   : outcomeValues,
+  //       outcomeValues,
+  //     },
+  //   },
+  //   type: '/outcomes/toggle_outcome',
+  // };
   // log(JSON.stringify(data, null, 2), 'white', true);
 
   /* ======================================================================== */
   /*                           Получение диспатчера                           */
   /* ======================================================================== */
 
-  const headerWrapper = document.querySelector('[data-id="header-wrapper"]');
-  const headerWrapperReactInstance = getReactInstance(headerWrapper) as {
-    return: {
-      memoizedProps: {
-        dispatch: (data: Record<string, unknown>) => unknown;
-      };
-    };
-  };
-  if (
-    !headerWrapperReactInstance ||
-    !headerWrapperReactInstance.return ||
-    !headerWrapperReactInstance.return.memoizedProps ||
-    !headerWrapperReactInstance.return.memoizedProps.dispatch
-  ) {
-    throw new JsFailError('Не найден диспатчер');
-  }
-  const dispath = headerWrapperReactInstance.return.memoizedProps.dispatch;
+  // const headerWrapper = document.querySelector('[data-id="header-wrapper"]');
+  // const headerWrapperReactInstance = getReactInstance(headerWrapper) as {
+  //   return: {
+  //     memoizedProps: {
+  //       dispatch: (data: Record<string, unknown>) => unknown;
+  //     };
+  //   };
+  // };
+  // if (
+  //   !headerWrapperReactInstance ||
+  //   !headerWrapperReactInstance.return ||
+  //   !headerWrapperReactInstance.return.memoizedProps ||
+  //   !headerWrapperReactInstance.return.memoizedProps.dispatch
+  // ) {
+  //   throw new JsFailError('Не найден диспатчер');
+  // }
+  // const dispatch = headerWrapperReactInstance.return.memoizedProps.dispatch;
 
   /* ======================================================================== */
   /*           Открытие ставки, проверка, что ставка попала в купон           */
   /* ======================================================================== */
 
   const openingAction = async () => {
-    dispath(data);
+    // dispatch(data);
+    outcome.click();
   };
   await repeatingOpenBet(openingAction, getStakeCount, 5, 1000, 50);
 
@@ -133,7 +160,7 @@ const openBet = async (): Promise<void> => {
 
   // Селектор ставки, без класса недоступности ставки
   const enabledBetSelector =
-    '._202_mUQgiqpBEpsnfX4nOy:not(._3dh0pK0lts4xHLOPcbzkFL):not(.VvPzvS2sTu5dVBQJfXbbZ)';
+    '.MF9pNgHHYHrCoYEiRXAArACM:not(.sYQCRt9kLlig_vtFxkTpQQC4)';
   const enabledBet = await getElement(enabledBetSelector);
   if (!enabledBet) {
     throw new JsFailError('Ставка не стала доступной');
@@ -145,6 +172,34 @@ const openBet = async (): Promise<void> => {
     throw new JsFailError('Коэффициент не появился');
   }
   log('Коэффициент появился', 'cadetblue', true);
+
+  const outcomeNameAppeared = await awaiter(() => {
+    const outcomeNameElement = document.querySelector(
+      '[data-id="betslip2-outcome"]'
+    );
+    if (outcomeNameElement) {
+      const outcomeNameElementText = text(outcomeNameElement);
+      return outcomeNameElementText !== '—';
+    }
+    return false;
+  });
+  if (!outcomeNameAppeared) {
+    throw new JsFailError('Исход не появился в купоне');
+  }
+
+  const eventNameAppeared = await awaiter(() => {
+    const eventNameElement = document.querySelector(
+      '[data-id="betslip2-outcome-event-name"]'
+    );
+    if (eventNameElement) {
+      const eventNameElementText = text(eventNameElement);
+      return eventNameElementText !== '';
+    }
+    return false;
+  });
+  if (!eventNameAppeared) {
+    throw new JsFailError('Исход не появился в купоне');
+  }
 
   /* ======================================================================== */
   /*                    Вывод информации об открытой ставке                   */
