@@ -63,7 +63,6 @@ const preOpenBet = async (): Promise<void> => {
       throw new JsFailError('Так и не дождались появления купона');
     }
   }
-  console.log(document.querySelector('._2IhWyc1X2jIjSb6LZqIvU9').outerHTML);
 };
 
 export default preOpenBet;

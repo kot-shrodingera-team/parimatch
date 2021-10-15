@@ -22,7 +22,6 @@ const openBet = async (): Promise<void> => {
   if (!couponCleared) {
     throw new JsFailError('Не удалось очистить купон');
   }
-  console.log(document.querySelector('._2IhWyc1X2jIjSb6LZqIvU9').outerHTML);
 
   /* ======================================================================== */
   /*                      Формирование данных для поиска                      */

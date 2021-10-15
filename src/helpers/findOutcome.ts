@@ -36,10 +36,10 @@ const findOutcome = (
     };
 
     compareData.forEach((v) => {
-      if (worker.Dev) {
-        // eslint-disable-next-line no-console
-        console.log(v[0], v[1], compare(v[0], v[1]));
-      }
+      // if (worker.Dev) {
+      //   // eslint-disable-next-line no-console
+      //   console.log(v[0], v[1], compare(v[0], v[1]));
+      // }
       equal = equal ? compare(v[0], v[1]) : equal;
     });
 
